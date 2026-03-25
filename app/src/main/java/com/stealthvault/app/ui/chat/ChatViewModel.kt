@@ -27,11 +27,25 @@ class ChatViewModel @Inject constructor(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    val contacts: StateFlow<List<ChatContact>> = repository.getContacts()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val contacts: StateFlow<List<ChatContact>> = kotlinx.coroutines.flow.combine(
+        repository.getContacts(),
+        _isDecoy
+    ) { list, decoy ->
+        if (decoy) emptyList() else list
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun getMessages(partnerId: String): StateFlow<List<SecureMessage>> = repository.getMessages(partnerId)
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    fun getMessages(partnerId: String): StateFlow<List<SecureMessage>> = kotlinx.coroutines.flow.combine(
+        repository.getMessages(partnerId),
+        _isDecoy
+    ) { list, decoy ->
+        if (decoy) emptyList() else list
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    private val _isDecoy = kotlinx.coroutines.flow.MutableStateFlow(false)
+
+    fun setDecoyMode(decoy: Boolean) {
+        _isDecoy.value = decoy
+    }
 
     fun sendMessage(partnerId: String, partnerPubKey: String, text: String, selfDestructSec: Int = 0) {
         viewModelScope.launch {

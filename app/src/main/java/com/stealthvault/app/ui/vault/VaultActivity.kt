@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.stealthvault.app.R
 import com.stealthvault.app.databinding.ActivityVaultBinding
+import com.stealthvault.app.ui.chat.ChatViewModel
 import com.stealthvault.app.utils.ShakeDetector
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,6 +19,7 @@ class VaultActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityVaultBinding
     private val viewModel: VaultViewModel by viewModels()
+    private val chatViewModel: ChatViewModel by viewModels()
     private lateinit var navController: NavController
     private var isDecoyMode = false
     
@@ -39,6 +41,7 @@ class VaultActivity : AppCompatActivity() {
 
         isDecoyMode = intent.getBooleanExtra("IS_DECOY", false)
         viewModel.setDecoyMode(isDecoyMode)
+        chatViewModel.setDecoyMode(isDecoyMode)
         if (isDecoyMode) {
             Toast.makeText(this, "Safe Mode Active", Toast.LENGTH_SHORT).show()
         }

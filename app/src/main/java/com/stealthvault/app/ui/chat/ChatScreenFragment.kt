@@ -11,12 +11,20 @@ import com.stealthvault.app.databinding.FragmentChatScreenBinding
 import com.stealthvault.app.ui.chat.adapters.MessageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.stealthvault.app.R
+import com.stealthvault.app.databinding.FragmentChatScreenBinding
+import com.stealthvault.app.ui.chat.adapters.MessageAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ChatScreenFragment : Fragment(R.layout.fragment_chat_screen) {
 
-    private val viewModel: ChatViewModel by viewModels()
+    private val viewModel: ChatViewModel by activityViewModels()
     private var partnerId: String = ""
     private var partnerName: String = ""
     private var partnerPubKey: String = ""

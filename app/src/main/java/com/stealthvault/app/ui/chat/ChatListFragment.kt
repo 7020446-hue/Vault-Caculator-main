@@ -11,12 +11,20 @@ import com.stealthvault.app.databinding.FragmentChatListBinding
 import com.stealthvault.app.ui.chat.adapters.ChatAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.stealthvault.app.R
+import com.stealthvault.app.databinding.FragmentChatListBinding
+import com.stealthvault.app.ui.chat.adapters.ChatAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
 
-    private val viewModel: ChatViewModel by viewModels()
+    private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

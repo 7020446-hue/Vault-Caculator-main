@@ -14,12 +14,21 @@ import com.stealthvault.app.databinding.FragmentContactsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.tasks.await
 import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import com.google.firebase.database.FirebaseDatabase
+import com.stealthvault.app.R
+import com.stealthvault.app.data.local.entities.ChatContact
+import com.stealthvault.app.databinding.FragmentContactsBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.tasks.await
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ContactsFragment : Fragment(R.layout.fragment_contacts) {
 
-    private val viewModel: ChatViewModel by viewModels()
+    private val viewModel: ChatViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
