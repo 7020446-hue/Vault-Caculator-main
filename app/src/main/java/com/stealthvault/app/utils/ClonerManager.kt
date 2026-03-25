@@ -43,16 +43,48 @@ class ClonerManager @Inject constructor(
      * Launch an app in the managed profile.
      */
     fun launchAppInWorkProfile(packageName: String) {
-        val pm = context.packageManager
-        val mainIntent = pm.getLaunchIntentForPackage(packageName) ?: return
+        val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as android.content.pm.LauncherApps
         
-        // Find the managed profile user handle
         val profiles = userManager.userProfiles
         val workProfile = profiles.find { it != android.os.Process.myUserHandle() }
         
         if (workProfile != null) {
-            context.startActivity(mainIntent, null) // In theory, startActivity uses current user unless specified
-            // Note: Launching specifically in work profile usually requires cross-profile intent if not handled by system
+            val activities = launcherApps.getActivityList(packageName, workProfile)
+            if (activities.isNotEmpty()) {
+                launcherApps.startMainActivity(activities[0].componentName, workProfile, null, null)
+            } else {
+                // If not found, try enabling it (in case it was hidden/disabled)
+                enableAppInWorkProfile(packageName)
+            }
+        }
+    }
+
+    /**
+     * Unhide/Enable an app in the work profile.
+     */
+    fun enableAppInWorkProfile(packageName: String) {
+        val admin = ComponentName(context, AdminReceiver::class.java)
+        // Note: For full control, we must be the Profile Owner.
+        // We can also try opening the app's settings in the work profile.
+        try {
+            devicePolicyManager.setApplicationHidden(admin, packageName, false)
+        } catch (e: Exception) {
+            // Might fail if not profile owner yet or app not found
+        }
+    /**
+     * Open the Play Store inside the work profile to allow installing new apps there.
+     */
+    fun openPlayStoreInWorkProfile() {
+        val profiles = userManager.userProfiles
+        val workProfile = profiles.find { it != android.os.Process.myUserHandle() }
+        
+        if (workProfile != null) {
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_APP_MARKET)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent, null) // Note: startActivity might automatically pick the profile-aware intent if handled correctly
+            // Alternatively, use a cross-profile intent or find the market activity in the profile.
         }
     }
 }

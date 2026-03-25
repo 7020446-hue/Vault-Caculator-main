@@ -40,12 +40,17 @@ class CalculatorActivity : AppCompatActivity() {
             setupBiometric()
             setupButtons()
             
-            // Secret trigger: Long press history to use Biometrics
+            // Show initial setup prompt if needed
+            if (!securityPrefs.isSetupComplete) {
+                binding.tvDisplay.text = "0"
+                binding.tvHistory.text = "CREATE MASTER PIN"
+            }
+
             binding.tvHistory.setOnLongClickListener {
                 if (securityPrefs.isSetupComplete) {
                     biometricPrompt.authenticate(promptInfo)
                 } else {
-                    Toast.makeText(this, "Set Master PIN first", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Complete Setup First", Toast.LENGTH_SHORT).show()
                 }
                 true
             }
@@ -126,23 +131,27 @@ class CalculatorActivity : AppCompatActivity() {
 
     private fun setupPins() {
         val input = currentInput
-        if (input.isEmpty()) return
+        if (input.isEmpty() || input.length < 4) {
+            Toast.makeText(this, "PIN must be at least 4 digits", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         if (securityPrefs.masterPin == null) {
             securityPrefs.masterPin = input
-            Toast.makeText(this, "Master PIN set. Now enter a DECOY PIN and press '='", Toast.LENGTH_LONG).show()
+            binding.tvHistory.text = "CREATE DECOY PIN"
+            Toast.makeText(this, "Master PIN Saved!", Toast.LENGTH_SHORT).show()
         } else if (securityPrefs.decoyPin == null) {
             if (input == securityPrefs.masterPin) {
-                Toast.makeText(this, "Decoy PIN must be different from Master PIN", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Decoy must be different", Toast.LENGTH_SHORT).show()
             } else {
                 securityPrefs.decoyPin = input
                 securityPrefs.isSetupComplete = true
-                Toast.makeText(this, "Setup complete! Enter Master PIN to unlock vault.", Toast.LENGTH_LONG).show()
+                binding.tvHistory.text = "VAULT SECURED"
+                Toast.makeText(this, "Setup Complete!", Toast.LENGTH_LONG).show()
             }
         }
         currentInput = ""
         binding.tvDisplay.text = "0"
-        binding.tvHistory.text = ""
     }
 
     private fun performMath() {

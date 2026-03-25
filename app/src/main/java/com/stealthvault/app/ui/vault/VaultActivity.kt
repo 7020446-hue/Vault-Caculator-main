@@ -38,8 +38,9 @@ class VaultActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         isDecoyMode = intent.getBooleanExtra("IS_DECOY", false)
+        viewModel.setDecoyMode(isDecoyMode)
         if (isDecoyMode) {
-            Toast.makeText(this, "Decoy Mode Active", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Safe Mode Active", Toast.LENGTH_SHORT).show()
         }
 
         setupNavigation()

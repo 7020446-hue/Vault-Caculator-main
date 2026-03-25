@@ -20,26 +20,62 @@ class VaultViewModel @Inject constructor(
     private val repository: VaultRepository
 ) : ViewModel() {
 
-    val photos: StateFlow<List<VaultFile>> = repository.getFilesByType("Photo")
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    private val _isDecoy = MutableStateFlow(false)
+    val isDecoy: StateFlow<Boolean> = _isDecoy.asStateFlow()
 
-    val videos: StateFlow<List<VaultFile>> = repository.getFilesByType("Video")
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    fun setDecoyMode(decoy: Boolean) {
+        _isDecoy.value = decoy
+    }
 
-    val files: StateFlow<List<VaultFile>> = repository.getFilesByType("Document")
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    // Wrap flows to return empty list if decoy
+    val photos: StateFlow<List<VaultFile>> = combine(
+        repository.getFilesByType("Photo"),
+        _isDecoy
+    ) { files, isDecoyMode ->
+        if (isDecoyMode) emptyList() else files
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    val lockedApps = repository.getAllLockedApps()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val videos: StateFlow<List<VaultFile>> = combine(
+        repository.getFilesByType("Video"),
+        _isDecoy
+    ) { files, isDecoyMode ->
+        if (isDecoyMode) emptyList() else files
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    val intruderLogs: StateFlow<List<IntruderLog>> = repository.getIntruderLogs()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val files: StateFlow<List<VaultFile>> = combine(
+        repository.getFilesByType("Document"),
+        _isDecoy
+    ) { files, isDecoyMode ->
+        if (isDecoyMode) emptyList() else files
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    val notes: StateFlow<List<VaultNote>> = repository.getAllNotes()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val lockedApps = combine(
+        repository.getAllLockedApps(),
+        _isDecoy
+    ) { apps, isDecoyMode ->
+        if (isDecoyMode) emptyList() else apps
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val intruderLogs: StateFlow<List<IntruderLog>> = combine(
+        repository.getIntruderLogs(),
+        _isDecoy
+    ) { logs, isDecoyMode ->
+        if (isDecoyMode) emptyList() else logs
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val notes: StateFlow<List<VaultNote>> = combine(
+        repository.getAllNotes(),
+        _isDecoy
+    ) { notes, isDecoyMode ->
+        if (isDecoyMode) emptyList() else notes
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
         
-    val clonedApps: StateFlow<List<ClonedApp>> = repository.getAllClonedApps()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val clonedApps: StateFlow<List<ClonedApp>> = combine(
+        repository.getAllClonedApps(),
+        _isDecoy
+    ) { apps, isDecoyMode ->
+        if (isDecoyMode) emptyList() else apps
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun importFile(context: Context, uri: Uri) = viewModelScope.launch {
         val type = context.contentResolver.getType(uri) ?: "Document"
@@ -48,6 +84,10 @@ class VaultViewModel @Inject constructor(
             type.startsWith("video/") -> "Video"
             else -> "Document"
         }
+        
+        // Try to get original path and name
+        val originalName = queryFileName(context, uri)
+        val originalPath = getUriPath(context, uri)
         
         // Copy to temp file then hide
         val tempFile = File(context.cacheDir, "temp_import_${System.currentTimeMillis()}")
@@ -58,8 +98,26 @@ class VaultViewModel @Inject constructor(
         }
         
         if (tempFile.exists()) {
-            repository.hideFile(tempFile, category)
+            repository.hideFile(tempFile, category, originalName, originalPath)
         }
+    }
+
+    private fun queryFileName(context: Context, uri: Uri): String? {
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
+        return cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) it.getString(nameIndex) else null
+            } else null
+        }
+    }
+
+    private fun getUriPath(context: Context, uri: Uri): String? {
+        if (uri.scheme == "file") return uri.path
+        // For content URIs, we'll store a sensible default restore loc if we can't find better
+        val fileName = queryFileName(context, uri) ?: "restored_file"
+        val downloadDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+        return File(downloadDir, fileName).absolutePath
     }
 
     fun hideFile(file: File, type: String) = viewModelScope.launch { repository.hideFile(file, type) }

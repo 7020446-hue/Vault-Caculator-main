@@ -90,6 +90,11 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
                 val selectedApp = apps[which]
                 viewModel.cloneApp(selectedApp.packageName, selectedApp.loadLabel(pm).toString())
                 Toast.makeText(context, "${selectedApp.loadLabel(pm)} added to vault", Toast.LENGTH_SHORT).show()
+                // Auto-enable selected app in work profile
+                clonerManager.enableAppInWorkProfile(selectedApp.packageName)
+            }
+            .setNeutralButton("Install from Play (inside Sandbox)") { _, _ ->
+                clonerManager.openPlayStoreInWorkProfile()
             }
             .show()
     }

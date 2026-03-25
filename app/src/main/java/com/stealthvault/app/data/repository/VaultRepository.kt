@@ -19,12 +19,24 @@ class VaultRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    suspend fun hideFile(originalFile: File, fileType: String) = withContext(Dispatchers.IO) {
+    suspend fun hideFile(originalFile: File, fileType: String, originalName: String? = null, originalPath: String? = null) = withContext(Dispatchers.IO) {
         val encryptedFileName = "vault_${UUID.randomUUID()}"
         val encryptedFile = File(context.filesDir, "vault/$encryptedFileName")
         if (!encryptedFile.parentFile!!.exists()) encryptedFile.parentFile!!.mkdirs()
+        
         encryptionManager.encryptFile(originalFile, encryptedFile)
-        dao.insertFile(VaultFile(fileName = originalFile.name, encryptedPath = encryptedFile.absolutePath, originalPath = originalFile.absolutePath, fileType = fileType, size = originalFile.length()))
+        
+        val finalOriginalPath = originalPath ?: originalFile.absolutePath
+        val finalOriginalName = originalName ?: originalFile.name
+        
+        dao.insertFile(VaultFile(
+            fileName = finalOriginalName, 
+            encryptedPath = encryptedFile.absolutePath, 
+            originalPath = finalOriginalPath, 
+            fileType = fileType, 
+            size = originalFile.length()
+        ))
+        
         if (originalFile.exists()) originalFile.delete()
     }
 
