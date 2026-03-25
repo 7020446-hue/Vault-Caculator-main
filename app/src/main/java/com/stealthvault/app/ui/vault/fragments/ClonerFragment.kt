@@ -40,15 +40,28 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
     private fun setupRecyclerView() {
         adapter = ClonedAppAdapter(
             onLaunch = { app ->
-                // Look up the web version URL for this app
                 val webUrl = com.stealthvault.app.ui.vault.AppWebActivity.WEB_APP_MAP[app.packageName]
 
-                // Open it inside the vault's in-app browser
-                val intent = android.content.Intent(requireContext(), com.stealthvault.app.ui.vault.AppWebActivity::class.java).apply {
-                    putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_URL, webUrl)
-                    putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_TITLE, app.appName)
+                if (webUrl != null) {
+                    // ✅ Has a web version — open inside vault
+                    val intent = android.content.Intent(requireContext(), com.stealthvault.app.ui.vault.AppWebActivity::class.java).apply {
+                        putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_URL, webUrl)
+                        putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_TITLE, app.appName)
+                    }
+                    startActivity(intent)
+                } else {
+                    // 🔄 No web version — launch the real installed app
+                    val launchIntent = requireContext().packageManager
+                        .getLaunchIntentForPackage(app.packageName)?.apply {
+                            addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            addFlags(android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                        }
+                    if (launchIntent != null) {
+                        requireContext().startActivity(launchIntent)
+                    } else {
+                        Toast.makeText(context, "${app.appName} is not installed.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                startActivity(intent)
             },
             onDelete = { app ->
                 viewModel.deleteClonedApp(app)
