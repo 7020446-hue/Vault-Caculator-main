@@ -3,55 +3,202 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/surface"
+    android:background="@drawable/bg_bottom_sheet"
     android:orientation="vertical"
     android:padding="24dp">
+
+    <!-- Handle indicator -->
+    <View
+        android:layout_width="48dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:background="#DDDDDD" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hide New Item"
+        android:text="Secure Import"
         android:textColor="@color/on_surface"
         android:textSize="22sp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
         android:layout_marginBottom="24dp" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnHidePhotos"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:icon="@android:drawable/ic_menu_gallery"
-        app:iconTint="@color/primary"
-        style="@style/Widget.Material3.Button.TonalButton"
-        app:backgroundTint="#2C2C2E"
-        android:textColor="#FFFFFF"
-        android:text="Hide Photos"
-        android:gravity="start|center_vertical"
-        android:layout_marginBottom="12dp" />
+        android:layout_height="80dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true">
 
-    <com.google.android.material.button.MaterialButton
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_icon_circle"
+                android:src="@android:drawable/ic_menu_gallery"
+                app:tint="@color/primary" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hide Photos"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Import encrypted pictures safely"
+                    android:textColor="#8E8E93"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/arrow_up_float"
+                android:rotation="90"
+                app:tint="#D1D1D6" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnHideVideos"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:icon="@android:drawable/ic_menu_camera"
-        app:iconTint="@color/primary"
-        style="@style/Widget.Material3.Button.TonalButton"
-        app:backgroundTint="#2C2C2E"
-        android:textColor="#FFFFFF"
-        android:text="Hide Videos"
-        android:gravity="start|center_vertical"
-        android:layout_marginBottom="12dp" />
+        android:layout_height="80dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true">
 
-    <com.google.android.material.button.MaterialButton
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_icon_circle"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="#FF453A" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hide Videos"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Encrypt large video files instantly"
+                    android:textColor="#8E8E93"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/arrow_up_float"
+                android:rotation="90"
+                app:tint="#D1D1D6" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnHideNotes"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:icon="@android:drawable/ic_menu_edit"
-        app:iconTint="@color/primary"
-        style="@style/Widget.Material3.Button.TonalButton"
-        app:backgroundTint="#2C2C2E"
-        android:textColor="#FFFFFF"
-        android:text="Create Secure Note"
-        android:gravity="start|center_vertical" />
+        android:layout_height="80dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_icon_circle"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="#32ADE6" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Secure Note"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create encrypted memos and pads"
+                    android:textColor="#8E8E93"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/arrow_up_float"
+                android:rotation="90"
+                app:tint="#D1D1D6" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
