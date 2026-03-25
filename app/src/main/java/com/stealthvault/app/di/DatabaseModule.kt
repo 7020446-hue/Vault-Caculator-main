@@ -30,6 +30,7 @@ object DatabaseModule {
             "vault_database"
         )
             .openHelperFactory(factory)
+            .fallbackToDestructiveMigration()
             .build()
     }
 

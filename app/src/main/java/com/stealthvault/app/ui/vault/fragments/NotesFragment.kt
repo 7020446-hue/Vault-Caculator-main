@@ -25,7 +25,10 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
         val binding = FragmentNotesBinding.bind(view)
 
         val adapter = VaultNoteAdapter { note ->
-            // Edit existing note logic here
+            val bundle = Bundle().apply {
+                putLong("noteId", note.id)
+            }
+            findNavController().navigate(R.id.noteEditFragment, bundle)
         }
 
         binding.rvNotes.apply {

@@ -37,6 +37,9 @@ class VaultViewModel @Inject constructor(
 
     val notes: StateFlow<List<VaultNote>> = repository.getAllNotes()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        
+    val clonedApps: StateFlow<List<ClonedApp>> = repository.getAllClonedApps()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun importFile(context: Context, uri: Uri) = viewModelScope.launch {
         val type = context.contentResolver.getType(uri) ?: "Document"
@@ -65,8 +68,14 @@ class VaultViewModel @Inject constructor(
     fun lockApp(pkgName: String, name: String) = viewModelScope.launch { repository.lockApp(pkgName, name) }
     fun unlockApp(pkgName: String, name: String) = viewModelScope.launch { repository.unlockApp(LockedApp(pkgName, name)) }
 
-    fun saveNote(title: String, content: String) = viewModelScope.launch { 
-        repository.saveNote(VaultNote(title = title, content = content))
+    fun saveNote(title: String, content: String, category: String = "General", id: Long = 0) = viewModelScope.launch { 
+        repository.saveNote(VaultNote(id = id, title = title, content = content, category = category))
     }
     fun deleteNote(note: VaultNote) = viewModelScope.launch { repository.deleteNote(note) }
+    
+    fun cloneApp(packageName: String, label: String) = viewModelScope.launch {
+        repository.saveClonedApp(ClonedApp(packageName, label, label))
+    }
+    
+    fun deleteClonedApp(app: ClonedApp) = viewModelScope.launch { repository.deleteClonedApp(app) }
 }

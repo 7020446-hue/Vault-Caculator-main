@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Vault Colors -->
-    <color name="primary">#9D4EDD</color>
-    <color name="primary_variant">#7B2CBF</color>
-    <color name="secondary">#00F5D4</color>
-    <color name="background">#09090B</color>
-    <color name="surface">#18181B</color>
-    <color name="on_surface">#E4E4E7</color>
-    <color name="error">#FF4D4D</color>
+    <!-- Premium Minimalist Light Palette -->
+    <color name="primary">#4F46E5</color> <!-- Soft Indigo -->
+    <color name="primary_variant">#3730A3</color>
+    <color name="secondary">#0891B2</color> <!-- Cyan 600 -->
+    <color name="background">#FAFAFA</color> <!-- Off-white/Pure Cloud -->
+    <color name="surface">#FFFFFF</color>
+    <color name="on_surface">#1F2937</color> <!-- Gray 800 (Softer than pure black) -->
+    <color name="on_surface_secondary">#6B7280</color> <!-- Gray 500 -->
+    <color name="error">#EF4444</color>
     
-    <!-- Calculator Colors (Standard Disguise) -->
-    <color name="calc_display_bg">#212121</color>
-    <color name="calc_button_number">#FAFAFA</color>
-    <color name="calc_button_operator">#7C4DFF</color>
-    <color name="calc_button_special">#424242</color>
+    <!-- Calculator Disguise (Discrete System Look) -->
+    <color name="calc_display_bg">#F3F4F6</color>
+    <color name="calc_button_number">#111827</color>
+    <color name="calc_button_operator">#4B5563</color> <!-- Muted Gray for operators -->
+    <color name="calc_button_special">#E5E7EB</color>
 
-    <!-- App Locker Overlay -->
-    <color name="transparent_black">#AA000000</color>
+    <color name="transparent_black">#88000000</color>
+    <color name="glass_white">#AAFFFFFF</color>
 </resources>

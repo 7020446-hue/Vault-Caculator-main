@@ -49,6 +49,11 @@ class VaultRepository @Inject constructor(
     suspend fun deleteNote(note: VaultNote) = dao.deleteNote(note)
     fun getAllNotes(): Flow<List<VaultNote>> = dao.getAllNotes()
 
+    // Cloned Apps
+    fun getAllClonedApps(): Flow<List<ClonedApp>> = dao.getAllClonedApps()
+    suspend fun saveClonedApp(app: ClonedApp) = dao.saveClonedApp(app)
+    suspend fun deleteClonedApp(app: ClonedApp) = dao.deleteClonedApp(app)
+
     suspend fun wipeAllData() = withContext(Dispatchers.IO) {
         val vaultDir = File(context.filesDir, "vault")
         if (vaultDir.exists()) vaultDir.deleteRecursively()

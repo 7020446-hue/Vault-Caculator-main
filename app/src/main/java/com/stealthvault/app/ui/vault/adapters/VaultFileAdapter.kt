@@ -19,10 +19,15 @@ class VaultFileAdapter(private val onItemClick: (VaultFile) -> Unit) :
         fun bind(file: VaultFile, clickListener: (VaultFile) -> Unit) {
             binding.tvFileName.text = file.fileName
             
-            Glide.with(binding.root.context)
-                .load(File(file.encryptedPath)) 
-                .placeholder(R.drawable.ic_vault_logo)
-                .into(binding.ivThumbnail)
+            // Files are encrypted, so we show a generic icon of the correct type
+            val iconRes = when (file.fileType) {
+                "Photo" -> android.R.drawable.ic_menu_gallery
+                "Video" -> android.R.drawable.ic_menu_slideshow
+                else -> android.R.drawable.ic_menu_view
+            }
+            
+            binding.ivThumbnail.setImageResource(iconRes)
+            binding.ivThumbnail.scaleType = android.widget.ImageView.ScaleType.CENTER_INSIDE
 
             binding.root.setOnClickListener { clickListener(file) }
         }

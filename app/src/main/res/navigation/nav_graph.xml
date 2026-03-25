@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/photosFragment">
+    app:startDestination="@id/mediaFragment">
 
     <fragment
-        android:id="@+id/photosFragment"
-        android:name="com.stealthvault.app.ui.vault.fragments.PhotosFragment"
-        android:label="Photos"
-        tools:layout="@layout/fragment_vault_list" />
-
-    <fragment
-        android:id="@+id/videosFragment"
-        android:name="com.stealthvault.app.ui.vault.fragments.VideosFragment"
-        android:label="Videos"
-        tools:layout="@layout/fragment_vault_list" />
+        android:id="@+id/mediaFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.MediaFragment"
+        android:label="Vault"
+        tools:layout="@layout/fragment_media" />
 
     <fragment
         android:id="@+id/notesFragment"
@@ -45,7 +39,12 @@
         android:id="@+id/noteEditFragment"
         android:name="com.stealthvault.app.ui.vault.fragments.NoteEditFragment"
         android:label="Edit Note"
-        tools:layout="@layout/fragment_note_edit" />
+        tools:layout="@layout/fragment_note_edit">
+        <argument
+            android:name="noteId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
 
     <fragment
         android:id="@+id/mediaDetailFragment"
@@ -65,6 +64,12 @@
         android:name="com.stealthvault.app.ui.vault.fragments.BrowserFragment"
         android:label="Incognito"
         tools:layout="@layout/fragment_browser" />
+
+    <fragment
+        android:id="@+id/clonerFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.ClonerFragment"
+        android:label="Dual Apps"
+        tools:layout="@layout/fragment_cloner" />
 
 </navigation>
 

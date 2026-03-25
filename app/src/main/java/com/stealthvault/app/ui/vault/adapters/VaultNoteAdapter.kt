@@ -17,6 +17,21 @@ class VaultNoteAdapter(private val onItemClick: (VaultNote) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(note: VaultNote, clickListener: (VaultNote) -> Unit) {
             binding.tvNoteTitle.text = note.title
+            
+            // Securely show preview - Star out sensitivity categories
+            binding.tvNotePreview.text = when (note.category) {
+                "Password", "Finance" -> "••••••••••••"
+                else -> note.content
+            }
+
+            // Category Icon
+            val iconRes = when (note.category) {
+                "Password" -> android.R.drawable.ic_lock_lock
+                "Finance" -> android.R.drawable.ic_menu_today
+                else -> android.R.drawable.ic_menu_edit
+            }
+            binding.ivCategoryIcon.setImageResource(iconRes)
+
             val calendar = Calendar.getInstance().apply { timeInMillis = note.timestamp }
             binding.tvNoteDate.text = DateFormat.format("dd MMM yyyy", calendar)
             binding.root.setOnClickListener { clickListener(note) }

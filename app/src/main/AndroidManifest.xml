@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <application
@@ -28,6 +29,7 @@
 
         android:supportsRtl="true"
         android:theme="@style/Theme.StealthVault"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!-- Original Entry Point (Disabled by default if using an alias) -->
@@ -114,6 +116,20 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Profile / Admin Receiver for Cloning -->
+        <receiver
+            android:name=".receiver.AdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:enabled="true"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_config" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
 

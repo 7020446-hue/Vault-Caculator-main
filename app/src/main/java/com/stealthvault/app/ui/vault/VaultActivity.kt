@@ -75,7 +75,7 @@ class VaultActivity : AppCompatActivity() {
             }
             sheetView.findViewById<android.view.View>(R.id.btnHideNotes).setOnClickListener {
                 bottomSheet.dismiss()
-                Toast.makeText(this, "Secure Notes coming soon!", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.noteEditFragment)
             }
             bottomSheet.show()
         }

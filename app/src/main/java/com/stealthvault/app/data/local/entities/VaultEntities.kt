@@ -20,6 +20,15 @@ data class LockedApp(
     val isLocked: Boolean = true
 )
 
+@Entity(tableName = "cloned_apps")
+data class ClonedApp(
+    @PrimaryKey val packageName: String,
+    val appName: String,
+    val originalName: String,
+    val dateCloned: Long = System.currentTimeMillis(),
+    val isEnabled: Boolean = true
+)
+
 @Entity(tableName = "intruder_logs")
 data class IntruderLog(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -33,6 +42,7 @@ data class VaultNote(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val title: String,
     val content: String,
+    val category: String = "General",
     val timestamp: Long = System.currentTimeMillis()
 )
 
@@ -61,6 +71,16 @@ interface VaultDao {
     @Delete
     suspend fun unlockApp(app: LockedApp)
 
+    // Cloned Apps
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveClonedApp(app: ClonedApp)
+
+    @Query("SELECT * FROM cloned_apps")
+    fun getAllClonedApps(): kotlinx.coroutines.flow.Flow<List<ClonedApp>>
+
+    @Delete
+    suspend fun deleteClonedApp(app: ClonedApp)
+
     // Intruder Logs
     @Insert
     suspend fun logIntruder(log: IntruderLog)
@@ -79,7 +99,7 @@ interface VaultDao {
     suspend fun deleteNote(note: VaultNote)
 }
 
-@Database(entities = [VaultFile::class, LockedApp::class, IntruderLog::class, VaultNote::class], version = 1)
+@Database(entities = [VaultFile::class, LockedApp::class, IntruderLog::class, VaultNote::class, ClonedApp::class], version = 3)
 abstract class VaultDatabase : RoomDatabase() {
     abstract fun vaultDao(): VaultDao
 }
