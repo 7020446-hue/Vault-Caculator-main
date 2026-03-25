@@ -16,4 +16,8 @@
         android:id="@+id/browserFragment"
         android:icon="@android:drawable/ic_menu_search"
         android:title="Web" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Settings" />
 </menu>

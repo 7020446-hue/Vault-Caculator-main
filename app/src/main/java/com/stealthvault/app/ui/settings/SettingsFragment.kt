@@ -18,25 +18,26 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentSettingsBinding.bind(view)
-
-        binding.btnChangePin.setOnClickListener {
-            // Placeholder: Reset setup so user can set new PIN via calculator
+        
+        // Use basic findViewById since we rewrote the layout to not use the exact old binding structure
+        view.findViewById<View>(R.id.btnChangePin).setOnClickListener {
+            // Security Reset: Wipe stored PINs and require immediate setup
+            securityPrefs.masterPin = null
+            securityPrefs.decoyPin = null
             securityPrefs.isSetupComplete = false
-            Toast.makeText(requireContext(), "Please re-open the app to set a new PIN.", Toast.LENGTH_LONG).show()
+            
+            Toast.makeText(requireContext(), "Auth credentials reset. Please select a new Master PIN.", Toast.LENGTH_LONG).show()
+            requireActivity().finishAffinity()
         }
 
-        binding.btnManageApps.setOnClickListener {
+        view.findViewById<View>(R.id.btnManageApps).setOnClickListener {
             androidx.navigation.fragment.NavHostFragment.findNavController(this)
                 .navigate(R.id.appLockerFragment)
         }
 
-        binding.btnViewIntruderLogs.setOnClickListener {
-
+        view.findViewById<View>(R.id.btnViewIntruderLogs).setOnClickListener {
             androidx.navigation.fragment.NavHostFragment.findNavController(this)
                 .navigate(R.id.intruderLogsFragment)
         }
     }
 }
-
-
