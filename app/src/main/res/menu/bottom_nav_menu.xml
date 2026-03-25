@@ -13,10 +13,6 @@
         android:icon="@android:drawable/ic_menu_share"
         android:title="Dual Apps" />
     <item
-        android:id="@+id/chatListFragment"
-        android:icon="@android:drawable/ic_menu_send"
-        android:title="Messages" />
-    <item
         android:id="@+id/browserFragment"
         android:icon="@android:drawable/ic_menu_search"
         android:title="Web" />
