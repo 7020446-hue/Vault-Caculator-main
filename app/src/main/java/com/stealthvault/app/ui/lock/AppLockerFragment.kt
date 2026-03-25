@@ -13,6 +13,7 @@ import com.stealthvault.app.R
 import com.stealthvault.app.databinding.FragmentAppLockerBinding
 import com.stealthvault.app.ui.lock.adapters.AppInfo
 import com.stealthvault.app.ui.lock.adapters.AppListAdapter
+import com.stealthvault.app.data.local.entities.LockedApp
 import com.stealthvault.app.ui.vault.VaultViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
