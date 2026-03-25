@@ -114,11 +114,12 @@
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintWidth_percent="0.22" />
 
         <!-- Row 5 -->
-        <Button style="@style/CalculatorButtonStyle" android:id="@+id/btn0" android:text="0"
+        <Button style="@style/CalculatorButtonStyle" android:id="@+id/btnBackspace" android:text="⌫"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/btn1"
-            app:layout_constraintEnd_toStartOf="@id/btnDot" app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintWidth_percent="0.46"
-            app:layout_constraintDimensionRatio="" />
+            app:layout_constraintEnd_toStartOf="@id/btn0" app:layout_constraintWidth_percent="0.22" />
+        <Button style="@style/CalculatorButtonStyle" android:id="@+id/btn0" android:text="0"
+            app:layout_constraintStart_toEndOf="@id/btnBackspace" app:layout_constraintTop_toBottomOf="@id/btn2"
+            app:layout_constraintEnd_toStartOf="@id/btnDot" app:layout_constraintWidth_percent="0.22" />
         <Button style="@style/CalculatorButtonStyle" android:id="@+id/btnDot" android:text="."
             app:layout_constraintStart_toEndOf="@id/btn0" app:layout_constraintTop_toBottomOf="@id/btn2"
             app:layout_constraintEnd_toStartOf="@id/btnEquals" app:layout_constraintWidth_percent="0.22" />

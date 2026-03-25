@@ -112,6 +112,13 @@ class CalculatorActivity : AppCompatActivity() {
             binding.tvDisplay.text = "0"
         }
 
+        binding.btnBackspace.setOnClickListener {
+            if (currentInput.isNotEmpty()) {
+                currentInput = currentInput.dropLast(1)
+                binding.tvDisplay.text = if (currentInput.isEmpty()) "0" else currentInput
+            }
+        }
+
         binding.btnEquals.setOnClickListener {
             checkUnlock()
         }
