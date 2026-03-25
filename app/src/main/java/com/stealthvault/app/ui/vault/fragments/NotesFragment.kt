@@ -47,6 +47,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.notes.collectLatest { notes ->
                 adapter.submitList(notes)
+                binding.tvEmpty.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
             }
         }
     }

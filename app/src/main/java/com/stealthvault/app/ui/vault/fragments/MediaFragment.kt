@@ -61,14 +61,25 @@ class MediaFragment : Fragment(R.layout.fragment_media) {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
+
+        binding.btnEmptyImport.setOnClickListener {
+            // Forward call to activity's FAB trigger
+            (activity as? com.stealthvault.app.ui.vault.VaultActivity)?.findViewById<android.view.View>(com.stealthvault.app.R.id.fabAdd)?.performClick()
+        }
     }
 
     private fun observeViewModel(position: Int) {
         viewLifecycleOwner.lifecycleScope.launch {
             if (position == 0) {
-                viewModel.photos.collectLatest { adapter.submitList(it) }
+                viewModel.photos.collectLatest { list ->
+                    adapter.submitList(list)
+                    binding.llEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                }
             } else {
-                viewModel.videos.collectLatest { adapter.submitList(it) }
+                viewModel.videos.collectLatest { list ->
+                    adapter.submitList(list)
+                    binding.llEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                }
             }
         }
     }

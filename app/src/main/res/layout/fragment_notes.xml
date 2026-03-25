@@ -13,6 +13,19 @@
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:gravity="center"
+        android:text="No secure notes yet.\nClick + to write your first secret memo."
+        android:textColor="@color/on_surface"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddNote"
         android:layout_width="wrap_content"
