@@ -58,7 +58,7 @@ class ChatScreenFragment : Fragment(R.layout.fragment_chat_screen) {
                 60 -> 300
                 else -> 0
             }
-            binding.btnSelfDestruct.setImageResource(if (selfDestructSec > 0) R.drawable.ic_camera else R.drawable.ic_search)
+            binding.btnSelfDestruct.setImageResource(if (selfDestructSec > 0) R.drawable.ic_timer else R.drawable.ic_lock)
             // Note: Visual indicator of timer
         }
 

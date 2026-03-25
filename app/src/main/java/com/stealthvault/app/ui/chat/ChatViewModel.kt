@@ -39,6 +39,18 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun addContact(contact: ChatContact) {
+        viewModelScope.launch {
+            repository.addContact(contact)
+        }
+    }
+
+    fun registerMessaging(username: String) {
+        viewModelScope.launch {
+            repository.registerSelf(username)
+        }
+    }
+
     /**
      * Start real-time listening for encrypted messages from Firebase.
      */

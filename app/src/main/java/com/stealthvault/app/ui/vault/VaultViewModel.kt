@@ -7,9 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.stealthvault.app.data.local.entities.*
 import com.stealthvault.app.data.repository.VaultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -49,7 +48,7 @@ class VaultViewModel @Inject constructor(
         if (isDecoyMode) emptyList() else files
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    val lockedApps = combine(
+    val lockedApps: StateFlow<List<LockedApp>> = combine(
         repository.getAllLockedApps(),
         _isDecoy
     ) { apps, isDecoyMode ->
@@ -134,35 +133,33 @@ class VaultViewModel @Inject constructor(
     fun cloneApp(packageName: String, label: String) = viewModelScope.launch {
         repository.saveClonedApp(ClonedApp(packageName, label, label))
     }
+    fun deleteClonedApp(app: ClonedApp) = viewModelScope.launch { repository.deleteClonedApp(app) }
     
     /**
      * Prepare a file for secure sharing by decrypting it to a temporary, private folder.
-     * Returns the temporary file.
      */
-    fun prepareSecureShare(context: Context, vaultFile: VaultFile): File? {
-        val shareDir = File(context.cacheDir, "secure_share")
-        if (!shareDir.exists()) shareDir.mkdirs()
-        
-        val tempShareFile = File(shareDir, "SHARE_${System.currentTimeMillis()}_${vaultFile.fileName}")
-        val encryptedFile = File(vaultFile.encryptedPath)
-        
-        return try {
-            repository.decryptFileForShare(encryptedFile, tempShareFile)
-            // Schedule auto-delete after 10 minutes (600,000 ms)
-            scheduleAutoDelete(tempShareFile, 10 * 60 * 1000L)
-            tempShareFile
-        } catch (e: Exception) {
-            null
+    fun prepareSecureShare(context: Context, vaultFile: VaultFile, callback: (File?) -> Unit) {
+        viewModelScope.launch {
+            val shareDir = File(context.cacheDir, "secure_share")
+            if (!shareDir.exists()) shareDir.mkdirs()
+            
+            val tempShareFile = File(shareDir, "SHARE_${System.currentTimeMillis()}_${vaultFile.fileName}")
+            val encryptedFile = File(vaultFile.encryptedPath)
+            
+            try {
+                repository.decryptFileForShare(encryptedFile, tempShareFile)
+                scheduleAutoDelete(tempShareFile, 10 * 60 * 1000L)
+                callback(tempShareFile)
+            } catch (e: Exception) {
+                callback(null)
+            }
         }
     }
 
     private fun scheduleAutoDelete(file: File, delayMs: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             kotlinx.coroutines.delay(delayMs)
-            if (file.exists()) {
-                file.delete()
-                println("Secure Share File Auto-Deleted: ${file.name}")
-            }
+            if (file.exists()) file.delete()
         }
     }
 }

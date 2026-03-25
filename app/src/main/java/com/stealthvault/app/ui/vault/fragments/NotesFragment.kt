@@ -37,7 +37,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
             val spanCount = (dpWidth / 300).toInt().coerceAtLeast(1) // 300dp per note block
             
             layoutManager = androidx.recyclerview.widget.StaggeredGridLayoutManager(spanCount, androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL)
-            adapter = adapter
+            this.adapter = adapter
         }
 
         binding.fabAddNote.setOnClickListener {

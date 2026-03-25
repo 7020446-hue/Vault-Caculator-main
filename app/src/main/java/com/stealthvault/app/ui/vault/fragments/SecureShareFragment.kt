@@ -39,24 +39,25 @@ class SecureShareFragment : Fragment(R.layout.fragment_secure_share) {
         )
 
         // Prepare temporary share
-        tempShareFile = viewModel.prepareSecureShare(requireContext(), vaultFile)
-        
-        tempShareFile?.let { file ->
-            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.fileprovider", file)
-            val shareText = uri.toString()
-            
-            // Generate QR Code
-            val qrBitmap = QrHelper.generateQrCode(shareText, 512)
-            binding.ivQrCode.setImageBitmap(qrBitmap)
+        viewModel.prepareSecureShare(requireContext(), vaultFile) { file ->
+            tempShareFile = file
+            tempShareFile?.let { f ->
+                val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.fileprovider", f)
+                val shareText = uri.toString()
+                
+                // Generate QR Code
+                val qrBitmap = QrHelper.generateQrCode(shareText, 512)
+                binding.ivQrCode.setImageBitmap(qrBitmap)
 
-            // Setup standard share
-            binding.btnShareLink.setOnClickListener {
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "*/*"
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // Setup standard share
+                binding.btnShareLink.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "*/*"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    startActivity(Intent.createChooser(intent, "Securely Share File"))
                 }
-                startActivity(Intent.createChooser(intent, "Securely Share File"))
             }
         }
 

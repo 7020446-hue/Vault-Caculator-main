@@ -42,7 +42,7 @@ class AppLockerFragment : Fragment(R.layout.fragment_app_locker) {
         checkAccessibilityService()
 
         lifecycleScope.launch {
-            viewModel.lockedApps.collectLatest { lockedList ->
+            viewModel.lockedApps.collectLatest { lockedList: List<LockedApp> ->
                 val lockedPkgs = lockedList.map { it.packageName }.toSet()
                 
                 binding.progressBar.visibility = View.VISIBLE
