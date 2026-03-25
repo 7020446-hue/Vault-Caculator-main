@@ -60,6 +60,14 @@ class VaultActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
+
+        // Make FAB context aware
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.mediaFragment -> binding.fabAdd.show()
+                else -> binding.fabAdd.hide()
+            }
+        }
     }
 
     private fun setupFab() {
