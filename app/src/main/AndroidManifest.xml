@@ -76,6 +76,12 @@
             android:exported="false"
             android:theme="@style/Theme.StealthVault.NoActionBar" />
 
+        <!-- In-App Web Viewer for Dual Apps -->
+        <activity
+            android:name=".ui.vault.AppWebActivity"
+            android:exported="false"
+            android:theme="@style/Theme.StealthVault" />
+
         <!-- App Lock Overlay -->
         <activity
             android:name=".ui.lock.AppLockActivity"

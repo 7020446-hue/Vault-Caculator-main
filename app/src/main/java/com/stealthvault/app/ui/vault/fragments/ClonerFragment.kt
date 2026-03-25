@@ -40,19 +40,15 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
     private fun setupRecyclerView() {
         adapter = ClonedAppAdapter(
             onLaunch = { app ->
-                // Launch the real installed app as a brand-new, separate task
-                val launchIntent = requireContext().packageManager
-                    .getLaunchIntentForPackage(app.packageName)?.apply {
-                        // These flags force Android to open it as a separate app,
-                        // completely independent from the vault
-                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                        addFlags(android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                    }
-                if (launchIntent != null) {
-                    requireContext().startActivity(launchIntent)
-                } else {
-                    Toast.makeText(context, "${app.appName} is not installed on this device.", Toast.LENGTH_SHORT).show()
+                // Look up the web version URL for this app
+                val webUrl = com.stealthvault.app.ui.vault.AppWebActivity.WEB_APP_MAP[app.packageName]
+
+                // Open it inside the vault's in-app browser
+                val intent = android.content.Intent(requireContext(), com.stealthvault.app.ui.vault.AppWebActivity::class.java).apply {
+                    putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_URL, webUrl)
+                    putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_TITLE, app.appName)
                 }
+                startActivity(intent)
             },
             onDelete = { app ->
                 viewModel.deleteClonedApp(app)
