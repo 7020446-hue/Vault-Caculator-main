@@ -61,6 +61,7 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.clonedApps.collect { clones ->
                 adapter.submitList(clones)
+                binding.tvEmpty.visibility = if (clones.isEmpty()) View.VISIBLE else View.GONE
             }
         }
     }

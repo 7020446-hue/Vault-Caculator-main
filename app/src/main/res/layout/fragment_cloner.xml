@@ -25,6 +25,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvHeader" />
 
+     <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:gravity="center"
+        android:text="No sandboxed clones yet.\nClick + to safeguard your apps."
+        android:textColor="@color/on_surface"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabClone"
         android:layout_width="wrap_content"
