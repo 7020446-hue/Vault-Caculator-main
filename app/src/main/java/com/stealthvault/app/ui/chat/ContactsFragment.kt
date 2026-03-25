@@ -4,25 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.database.FirebaseDatabase
-import com.stealthvault.app.R
-import com.stealthvault.app.data.local.entities.ChatContact
-import com.stealthvault.app.databinding.FragmentContactsBinding
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.tasks.await
-import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.FirebaseDatabase
 import com.stealthvault.app.R
 import com.stealthvault.app.data.local.entities.ChatContact
 import com.stealthvault.app.databinding.FragmentContactsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.tasks.await
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

@@ -26,6 +26,7 @@ class ChatViewModel @Inject constructor(
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val _isDecoy = kotlinx.coroutines.flow.MutableStateFlow(false)
 
     val contacts: StateFlow<List<ChatContact>> = kotlinx.coroutines.flow.combine(
         repository.getContacts(),
@@ -40,8 +41,6 @@ class ChatViewModel @Inject constructor(
     ) { list, decoy ->
         if (decoy) emptyList() else list
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-    private val _isDecoy = kotlinx.coroutines.flow.MutableStateFlow(false)
 
     fun setDecoyMode(decoy: Boolean) {
         _isDecoy.value = decoy

@@ -3,14 +3,6 @@ package com.stealthvault.app.ui.chat
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.stealthvault.app.R
-import com.stealthvault.app.databinding.FragmentChatListBinding
-import com.stealthvault.app.ui.chat.adapters.ChatAdapter
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
