@@ -71,6 +71,19 @@
         android:label="Dual Apps"
         tools:layout="@layout/fragment_cloner" />
 
+    <fragment
+        android:id="@+id/secureShareFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.SecureShareFragment"
+        android:label="Secure Share"
+        tools:layout="@layout/fragment_secure_share">
+        <argument
+            android:name="filePath"
+            app:argType="string" />
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+    </fragment>
+
 </navigation>
 
 

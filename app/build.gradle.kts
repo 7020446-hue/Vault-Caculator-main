@@ -88,6 +88,7 @@ dependencies {
     // Additional dependencies
     implementation("net.objecthunter:exp4j:0.4.8")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.google.zxing:core:3.5.1")
     implementation("com.google.guava:guava:31.1-android")
     
     testImplementation("junit:junit:4.13.2")

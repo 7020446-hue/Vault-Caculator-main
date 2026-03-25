@@ -61,6 +61,14 @@ class MediaDetailFragment : Fragment(R.layout.fragment_media_detail) {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.btnShareMedia.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("filePath", filePath)
+                putString("fileName", "vault_media_${System.currentTimeMillis()}")
+            }
+            findNavController().navigate(R.id.secureShareFragment, bundle)
+        }
     }
 
     override fun onDestroyView() {

@@ -135,5 +135,34 @@ class VaultViewModel @Inject constructor(
         repository.saveClonedApp(ClonedApp(packageName, label, label))
     }
     
-    fun deleteClonedApp(app: ClonedApp) = viewModelScope.launch { repository.deleteClonedApp(app) }
+    /**
+     * Prepare a file for secure sharing by decrypting it to a temporary, private folder.
+     * Returns the temporary file.
+     */
+    fun prepareSecureShare(context: Context, vaultFile: VaultFile): File? {
+        val shareDir = File(context.cacheDir, "secure_share")
+        if (!shareDir.exists()) shareDir.mkdirs()
+        
+        val tempShareFile = File(shareDir, "SHARE_${System.currentTimeMillis()}_${vaultFile.fileName}")
+        val encryptedFile = File(vaultFile.encryptedPath)
+        
+        return try {
+            repository.decryptFileForShare(encryptedFile, tempShareFile)
+            // Schedule auto-delete after 10 minutes (600,000 ms)
+            scheduleAutoDelete(tempShareFile, 10 * 60 * 1000L)
+            tempShareFile
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun scheduleAutoDelete(file: File, delayMs: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            kotlinx.coroutines.delay(delayMs)
+            if (file.exists()) {
+                file.delete()
+                println("Secure Share File Auto-Deleted: ${file.name}")
+            }
+        }
+    }
 }

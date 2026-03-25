@@ -66,6 +66,10 @@ class VaultRepository @Inject constructor(
     suspend fun saveClonedApp(app: ClonedApp) = dao.saveClonedApp(app)
     suspend fun deleteClonedApp(app: ClonedApp) = dao.deleteClonedApp(app)
 
+    suspend fun decryptFileForShare(encryptedFile: File, outputFile: File) = withContext(Dispatchers.IO) {
+        encryptionManager.decryptFile(encryptedFile, outputFile)
+    }
+
     suspend fun wipeAllData() = withContext(Dispatchers.IO) {
         val vaultDir = File(context.filesDir, "vault")
         if (vaultDir.exists()) vaultDir.deleteRecursively()

@@ -40,6 +40,11 @@ class CalculatorActivity : AppCompatActivity() {
             setupBiometric()
             setupButtons()
             
+            // Check for Camera Permission on first run to ensure Intruder Selfie works
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 101)
+            }
+
             // Show initial setup prompt if needed
             if (!securityPrefs.isSetupComplete) {
                 binding.tvDisplay.text = "0"
@@ -124,7 +129,13 @@ class CalculatorActivity : AppCompatActivity() {
         when (currentInput) {
             master -> launchVault(isDecoy = false)
             decoy -> launchVault(isDecoy = true)
-            else -> performMath()
+            else -> {
+                // Intruder logic: If they enter a 4-digit PIN that is WRONG, take a photo
+                if (currentInput.length >= 4 && !currentInput.contains("[+×÷−]".toRegex())) {
+                    cameraHelper.takeIntruderPhoto(this)
+                }
+                performMath()
+            }
         }
         currentInput = ""
     }
