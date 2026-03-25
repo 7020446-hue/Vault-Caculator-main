@@ -26,6 +26,24 @@ class VaultRepository @Inject constructor(
         
         encryptionManager.encryptFile(originalFile, encryptedFile)
         
+        // --- 📸 Generate & Encrypt Thumbnail Preview ---
+        try {
+            val thumbFile = File(encryptedFile.absolutePath + "_thumb")
+            val bitmap = if (fileType == "Video") {
+                android.media.ThumbnailUtils.createVideoThumbnail(originalFile.absolutePath, android.provider.MediaStore.Images.Thumbnails.MINI_KIND)
+            } else {
+                val options = android.graphics.BitmapFactory.Options().apply { inSampleSize = 4 }
+                android.graphics.BitmapFactory.decodeFile(originalFile.absolutePath, options)
+            }
+            if (bitmap != null) {
+                val tempThumb = File(context.cacheDir, "temp_thumb_${System.currentTimeMillis()}")
+                tempThumb.outputStream().use { bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, it) }
+                encryptionManager.encryptFile(tempThumb, thumbFile)
+                tempThumb.delete()
+            }
+        } catch (e: Exception) { e.printStackTrace() } // Fail gracefully so import proceeds
+        // ------------------------------------------------
+
         val finalOriginalPath = originalPath ?: originalFile.absolutePath
         val finalOriginalName = originalName ?: originalFile.name
         

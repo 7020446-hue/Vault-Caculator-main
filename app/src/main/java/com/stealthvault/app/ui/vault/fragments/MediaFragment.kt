@@ -24,6 +24,9 @@ class MediaFragment : Fragment(R.layout.fragment_media) {
     private val binding get() = _binding!!
     private lateinit var adapter: VaultFileAdapter
 
+    @javax.inject.Inject
+    lateinit var encryptionManager: com.stealthvault.app.data.security.EncryptionManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMediaBinding.bind(view)
@@ -34,7 +37,7 @@ class MediaFragment : Fragment(R.layout.fragment_media) {
     }
 
     private fun setupRecyclerView() {
-        adapter = VaultFileAdapter { file ->
+        adapter = VaultFileAdapter(encryptionManager) { file ->
             val bundle = Bundle().apply {
                 putString("filePath", file.encryptedPath)
                 putString("fileType", file.fileType)
