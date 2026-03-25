@@ -24,9 +24,15 @@ class ChatViewModel @Inject constructor(
     private val encryptionManager: ChatEncryptionManager
 ) : ViewModel() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
+    // Lazy Firebase initialization to prevent crashes if config is missing (stealth/offline mode)
+    private val auth by lazy { try { FirebaseAuth.getInstance() } catch (e: Exception) { null } }
+    private val db by lazy { try { FirebaseDatabase.getInstance() } catch (e: Exception) { null } }
+    
     private val _isDecoy = kotlinx.coroutines.flow.MutableStateFlow(false)
+
+    fun setDecoyMode(decoy: Boolean) {
+        _isDecoy.value = decoy
+    }
 
     val contacts: StateFlow<List<ChatContact>> = kotlinx.coroutines.flow.combine(
         repository.getContacts(),
@@ -41,10 +47,6 @@ class ChatViewModel @Inject constructor(
     ) { list, decoy ->
         if (decoy) emptyList() else list
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-    fun setDecoyMode(decoy: Boolean) {
-        _isDecoy.value = decoy
-    }
 
     fun sendMessage(partnerId: String, partnerPubKey: String, text: String, selfDestructSec: Int = 0) {
         viewModelScope.launch {
@@ -68,11 +70,11 @@ class ChatViewModel @Inject constructor(
      * Start real-time listening for encrypted messages from Firebase.
      */
     fun startListening() {
-        val myId = auth.currentUser?.uid ?: return
+        val fb = db ?: return
+        val myId = auth?.currentUser?.uid ?: return
         
-        db.getReference("messages/$myId").addChildEventListener(object : ChildEventListener {
+        fb.getReference("messages/$myId").addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                // Incoming message! (It's a folder of partner IDs)
                 val partnerId = snapshot.key ?: return
                 
                 snapshot.children.forEach { msgSnap ->
@@ -99,8 +101,7 @@ class ChatViewModel @Inject constructor(
                                 expiryTime = if (selfDestruct) System.currentTimeMillis() + (expirySec * 1000L) else 0
                             )
                             
-                            // 📥 Store & Delete from Relay (Zero-Knowledge: Messages are not stored permanently on server)
-                            repository.sendMessage(fromId, "", decryptedText) // Simplified cache call
+                            repository.sendMessage(fromId, "", decryptedText) 
                             msgSnap.ref.removeValue()
                             
                         } catch (e: Exception) { e.printStackTrace() }

@@ -16,35 +16,43 @@ class ChatRepository @Inject constructor(
     private val dao: VaultDao,
     private val encryptionManager: ChatEncryptionManager
 ) {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
+    // Lazy Firebase initialization
+    private val auth by lazy { try { FirebaseAuth.getInstance() } catch (e: Exception) { null } }
+    private val db by lazy { try { FirebaseDatabase.getInstance() } catch (e: Exception) { null } }
 
     /**
      * Send an E2E Encrypted message to a partner.
      */
     suspend fun sendMessage(partnerId: String, partnerPublicKey: String, text: String, selfDestructSec: Int = 0) {
-        val encrypted = encryptionManager.encryptMessage(text, partnerPublicKey)
-        val myId = auth.currentUser?.uid ?: return
+        val fb = db ?: return
+        val currentAuth = auth ?: return
         
-        val messageId = db.getReference("messages").push().key ?: return
-        val payload = mapOf(
-            "fromId" to myId,
-            "content" to encrypted.content,
-            "encryptedKey" to encrypted.encryptedKey,
-            "iv" to encrypted.iv,
-            "timestamp" to System.currentTimeMillis(),
-            "selfDestruct" to (selfDestructSec > 0),
-            "expirySec" to selfDestructSec
-        )
+        try {
+            val encrypted = encryptionManager.encryptMessage(text, partnerPublicKey)
+            val myId = currentAuth.currentUser?.uid ?: return
+            
+            val messageId = fb.getReference("messages").push().key ?: return
+            val payload = mapOf(
+                "fromId" to myId,
+                "content" to encrypted.content,
+                "encryptedKey" to encrypted.encryptedKey,
+                "iv" to encrypted.iv,
+                "timestamp" to System.currentTimeMillis(),
+                "selfDestruct" to (selfDestructSec > 0),
+                "expirySec" to selfDestructSec
+            )
 
-        // Relay via Firebase
-        db.getReference("messages/$partnerId/$myId/$messageId").setValue(payload).await()
+            // Relay via Firebase
+            fb.getReference("messages/$partnerId/$myId/$messageId").setValue(payload).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         
-        // Save locally in our vault
+        // Save locally in our vault (even if relay fails, we keep a local session)
         val localMsg = SecureMessage(
-            messageId = messageId,
+            messageId = "local_${System.currentTimeMillis()}",
             chatPartnerId = partnerId,
-            content = text, // Cache decrypted locally
+            content = text, 
             isFromMe = true,
             isSelfDestruct = selfDestructSec > 0,
             expiryTime = if (selfDestructSec > 0) System.currentTimeMillis() + (selfDestructSec * 1000L) else 0
@@ -56,15 +64,22 @@ class ChatRepository @Inject constructor(
      * Register self on the relay with public identity key.
      */
     suspend fun registerSelf(username: String) {
-        val user = auth.currentUser ?: return
-        val keyPair = encryptionManager.getIdentityKeyPair()
-        val pubKeyBase64 = android.util.Base64.encodeToString(keyPair.public.encoded, android.util.Base64.NO_WRAP)
+        val currentAuth = auth ?: return
+        val fb = db ?: return
+        val user = currentAuth.currentUser ?: return
         
-        val userProfile = mapOf(
-            "username" to username,
-            "publicKey" to pubKeyBase64
-        )
-        db.getReference("users/${user.uid}").setValue(userProfile).await()
+        try {
+            val keyPair = encryptionManager.getIdentityKeyPair()
+            val pubKeyBase64 = android.util.Base64.encodeToString(keyPair.public.encoded, android.util.Base64.NO_WRAP)
+            
+            val userProfile = mapOf(
+                "username" to username,
+                "publicKey" to pubKeyBase64
+            )
+            fb.getReference("users/${user.uid}").setValue(userProfile).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun getMessages(partnerId: String): Flow<List<SecureMessage>> = dao.getMessagesForPartner(partnerId)
