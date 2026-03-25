@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Modern Charcoal Background -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,0h108v108h-108z" />
+        
+    <!-- Premium Amber Accent (Center Button) -->
+    <path
+        android:fillColor="#FF9F0A"
+        android:pathData="M60,40 a8,8 0 0,1 8,-8 h12 a8,8 0 0,1 8,8 v12 a8,8 0 0,1 -8,8 h-12 a8,8 0 0,1 -8,-8 z" />
+        
+    <!-- Clean Minimalist Grid (Grey) -->
+    <path
+        android:strokeColor="#8E8E93"
+        android:strokeWidth="1.5"
+        android:pathData="M24,36h12 M24,52h12 M24,68h12 M48,36h12 M48,52h12 M48,68h12 M72,36" />
+        
+    <!-- White Equals Symbol inside Amber Button -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M68,42h8 M68,50h8" />
+</vector>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/photosFragment">
+
+    <fragment
+        android:id="@+id/photosFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.PhotosFragment"
+        android:label="Photos"
+        tools:layout="@layout/fragment_vault_list" />
+
+    <fragment
+        android:id="@+id/videosFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.VideosFragment"
+        android:label="Videos"
+        tools:layout="@layout/fragment_vault_list" />
+
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.NotesFragment"
+        android:label="Secret Notes"
+        tools:layout="@layout/fragment_notes" />
+
+    <fragment
+        android:id="@+id/appLockerFragment"
+        android:name="com.stealthvault.app.ui.lock.AppLockerFragment"
+        android:label="App Locker"
+        tools:layout="@layout/fragment_app_locker" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.stealthvault.app.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/intruderLogsFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.IntruderLogsFragment"
+        android:label="Intruder Logs"
+        tools:layout="@layout/fragment_intruder_logs" />
+
+    <fragment
+        android:id="@+id/noteEditFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.NoteEditFragment"
+        android:label="Edit Note"
+        tools:layout="@layout/fragment_note_edit" />
+
+    <fragment
+        android:id="@+id/mediaDetailFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.MediaDetailFragment"
+        android:label="Viewer"
+        tools:layout="@layout/fragment_media_detail">
+        <argument
+            android:name="filePath"
+            app:argType="string" />
+        <argument
+            android:name="fileType"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/browserFragment"
+        android:name="com.stealthvault.app.ui.vault.fragments.BrowserFragment"
+        android:label="Incognito"
+        tools:layout="@layout/fragment_browser" />
+
+</navigation>
+
+
+

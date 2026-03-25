@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
+    <application
+        android:name=".StealthVaultApp"
+        android:allowBackup="false"
+        android:extractNativeLibs="true"
+        android:icon="@drawable/ic_launcher_calculato2r"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/ic_launcher_calculato2r"
+
+        android:supportsRtl="true"
+        android:theme="@style/Theme.StealthVault"
+        tools:targetApi="31">
+
+        <!-- Original Entry Point (Disabled by default if using an alias) -->
+        <activity
+            android:name=".ui.fake.CalculatorActivity"
+            android:exported="true"
+            android:theme="@style/Theme.StealthVault.NoActionBar">
+            <!-- No intent-filter here if we use aliases -->
+        </activity>
+
+        <!-- Disguise 1: Calculator -->
+        <activity-alias
+            android:name=".CalculatorAlias"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_calculato2r"
+            android:label="@string/calculator_name"
+            android:targetActivity=".ui.fake.CalculatorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Disguise 2: Notes -->
+        <activity-alias
+            android:name=".NotesAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@android:drawable/ic_menu_edit"
+            android:label="Notes"
+            android:targetActivity=".ui.fake.CalculatorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+
+        <!-- Main Vault Hub -->
+        <activity
+            android:name=".ui.vault.VaultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.StealthVault.NoActionBar" />
+
+        <!-- App Lock Overlay -->
+        <activity
+            android:name=".ui.lock.AppLockActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/Theme.StealthVault.NoActionBar" />
+
+        <!-- Accessibility Service for App Locking -->
+        <service
+            android:name=".service.AppLockAccessibilityService"
+            android:description="@string/accessibility_service_description"
+            android:exported="false"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.view.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.AccessibilityService"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <receiver
+            android:name=".receiver.DialerReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Device Boot Receiver -->
+
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Emergency Hide System -->
+        <service
+            android:name=".service.EmergencyHideService"
+            android:enabled="true"
+            android:exported="false" />
+
+    </application>
+
+
+
+</manifest>

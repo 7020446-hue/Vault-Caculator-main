@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Background: Standard Material Blue -->
+    <path
+        android:fillColor="#1A73E8"
+        android:pathData="M0,0h108v108h-108z" />
+        
+    <!-- Calculator Grid (White) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,24h20v20H24z M64,24h20v20H64z M24,64h20v20H24z M64,64h20v20H64z" />
+        
+    <!-- Symbols (Simple Lines) -->
+    <!-- PLUS -->
+    <path
+        android:strokeColor="#1A73E8"
+        android:strokeWidth="2"
+        android:pathData="M34,28v12 M28,34h12" />
+        
+    <!-- MINUS -->
+    <path
+        android:strokeColor="#1A73E8"
+        android:strokeWidth="2"
+        android:pathData="M68,34h12" />
+        
+    <!-- MULTIPLY -->
+    <path
+        android:strokeColor="#1A73E8"
+        android:strokeWidth="2"
+        android:pathData="M28,68l12,12 M40,68l-12,12" />
+        
+    <!-- EQUALS -->
+    <path
+        android:strokeColor="#1A73E8"
+        android:strokeWidth="2"
+        android:pathData="M68,70h12 M68,78h12" />
+        
+</vector>

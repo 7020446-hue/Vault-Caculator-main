@@ -1,0 +1,17 @@
+# Android & Gradle
+.gradle/
+build/
+local.properties
+*.apk
+*.aar
+*.ap_
+*.der
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Vault-specific (internal storage shouldn't be shared)
+app/src/main/assets/vault/
+app/src/main/assets/intruders/

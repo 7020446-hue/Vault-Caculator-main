@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/surface"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hide New Item"
+        android:textColor="@color/on_surface"
+        android:textSize="22sp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="24dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnHidePhotos"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:icon="@android:drawable/ic_menu_gallery"
+        app:iconTint="@color/primary"
+        style="@style/Widget.Material3.Button.TonalButton"
+        app:backgroundTint="#2C2C2E"
+        android:textColor="#FFFFFF"
+        android:text="Hide Photos"
+        android:gravity="start|center_vertical"
+        android:layout_marginBottom="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnHideVideos"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:icon="@android:drawable/ic_menu_camera"
+        app:iconTint="@color/primary"
+        style="@style/Widget.Material3.Button.TonalButton"
+        app:backgroundTint="#2C2C2E"
+        android:textColor="#FFFFFF"
+        android:text="Hide Videos"
+        android:gravity="start|center_vertical"
+        android:layout_marginBottom="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnHideNotes"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:icon="@android:drawable/ic_menu_edit"
+        app:iconTint="@color/primary"
+        style="@style/Widget.Material3.Button.TonalButton"
+        app:backgroundTint="#2C2C2E"
+        android:textColor="#FFFFFF"
+        android:text="Create Secure Note"
+        android:gravity="start|center_vertical" />
+
+</LinearLayout>

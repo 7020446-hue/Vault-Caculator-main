@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stealth Vault</string>
+    <string name="welcome_message">Welcome to Secure Vault</string>
+    <string name="enter_pin">Enter Master PIN to Unlock</string>
+    <string name="confirm_pin">Confirm Master PIN</string>
+    <string name="pin_mismatch">PINs do not match. Try again.</string>
+    <string name="setup_complete">Setup Complete!</string>
+    
+    <!-- Vault Tabs -->
+    <string name="tab_photos">Photos</string>
+    <string name="tab_videos">Videos</string>
+    <string name="tab_notes">Notes</string>
+    <string name="tab_browser">Web</string>
+    <string name="tab_settings">Config</string>
+
+    <!-- Empty States -->
+    <string name="no_photos">No photos hidden yet.</string>
+    <string name="no_videos">No videos hidden yet.</string>
+    <string name="no_notes">No secret notes found.</string>
+    <string name="no_logs">No intruder attempts recorded.</string>
+
+    <!-- Permissions -->
+    <string name="perm_storage_title">Storage Permission Needed</string>
+    <string name="perm_storage_desc">We need storage access to hide your files securely.</string>
+    <string name="perm_camera_title">Camera Permission Needed</string>
+    <string name="perm_camera_desc">Camera access is required for the Intruder Selfie feature.</string>
+
+    <!-- App Locker -->
+    <string name="app_locker_desc">Lock other apps with your vault PIN.</string>
+    <string name="service_not_running">Accessibility Service is not running. Please enable it in Settings.</string>
+
+    <!-- Missing Strings -->
+    <string name="calculator_name">Calculator</string>
+    <string name="accessibility_service_description">This service is required to lock apps and protect your privacy.</string>
+    <string name="accessibility_service_label">Stealth Vault App Protector</string>
+</resources>

@@ -1,0 +1,56 @@
+name: Android Build & Release
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Ensure Gradle Wrapper exists
+      run: |
+        if [ ! -f gradlew ]; then
+          echo "Gradle wrapper missing, generating in temp dir to avoid Gradle 9 project evaluation crashes..."
+          mkdir /tmp/gradle-wrap && cd /tmp/gradle-wrap
+          touch settings.gradle.kts
+          gradle wrapper --gradle-version 8.7
+          cp -r gradlew gradlew.bat gradle/ ${{ github.workspace }}/
+          cd ${{ github.workspace }}
+        fi
+        chmod +x gradlew
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: stealth-vault-debug
+        path: app/build/outputs/apk/debug/app-debug.apk
+
+    - name: Auto-Release APK
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: "v1.0.${{ github.run_number }}"
+        name: "Build #${{ github.run_number }}"
+        body: "Automated debug build generated from GitHub Actions."
+        files: app/build/outputs/apk/debug/app-debug.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
