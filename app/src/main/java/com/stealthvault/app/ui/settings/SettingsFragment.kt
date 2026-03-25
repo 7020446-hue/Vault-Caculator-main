@@ -21,7 +21,58 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
+        // --- Smart Security ---
+        val tvAutoLock = view.findViewById<android.widget.TextView>(R.id.tvAutoLockStatus)
+        val tvMaxAttempts = view.findViewById<android.widget.TextView>(R.id.tvMaxAttemptsStatus)
+
+        fun refreshSmartStatus() {
+            val timeoutLabel = when (securityPrefs.autoLockTimeoutMs) {
+                SecurityPreferenceManager.TIMEOUT_IMMEDIATE -> "Immediately (most secure)"
+                SecurityPreferenceManager.TIMEOUT_30S      -> "After 30 seconds"
+                SecurityPreferenceManager.TIMEOUT_1MIN     -> "After 1 minute"
+                SecurityPreferenceManager.TIMEOUT_5MIN     -> "After 5 minutes"
+                else                                       -> "Never (least secure)"
+            }
+            tvAutoLock?.text = "Currently: $timeoutLabel"
+            tvMaxAttempts?.text = "Currently: lock after ${securityPrefs.maxFailedAttempts} wrong PINs"
+        }
+        refreshSmartStatus()
+
+        view.findViewById<View>(R.id.btnAutoLock)?.setOnClickListener {
+            val labels = arrayOf("Immediately", "After 30 seconds", "After 1 minute", "After 5 minutes", "Never")
+            val values = longArrayOf(
+                SecurityPreferenceManager.TIMEOUT_IMMEDIATE,
+                SecurityPreferenceManager.TIMEOUT_30S,
+                SecurityPreferenceManager.TIMEOUT_1MIN,
+                SecurityPreferenceManager.TIMEOUT_5MIN,
+                SecurityPreferenceManager.TIMEOUT_NEVER
+            )
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Auto-Lock Timer")
+                .setItems(labels) { _, which ->
+                    securityPrefs.autoLockTimeoutMs = values[which]
+                    refreshSmartStatus()
+                    Toast.makeText(requireContext(), "Auto-Lock set to: ${labels[which]}", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
+
+        view.findViewById<View>(R.id.btnMaxAttempts)?.setOnClickListener {
+            val options = arrayOf("3 attempts", "5 attempts", "10 attempts", "Unlimited (off)")
+            val numbers = intArrayOf(3, 5, 10, Int.MAX_VALUE)
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Wrong PIN Lockout")
+                .setItems(options) { _, which ->
+                    securityPrefs.maxFailedAttempts = numbers[which]
+                    securityPrefs.failedPinAttempts = 0 // Reset counter
+                    securityPrefs.isLockedOut = false
+                    refreshSmartStatus()
+                    Toast.makeText(requireContext(), "Lockout set to: ${options[which]}", Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
+
         view.findViewById<View>(R.id.btnChangePin).setOnClickListener {
             securityPrefs.masterPin = null
             securityPrefs.decoyPin = null

@@ -130,18 +130,59 @@ class CalculatorActivity : AppCompatActivity() {
             return
         }
 
+        // 🔒 Lockout check: too many wrong attempts
+        if (securityPrefs.isLockedOut) {
+            binding.tvHistory.text = "TOO MANY ATTEMPTS"
+            binding.tvDisplay.text = "⛔"
+            Toast.makeText(this, "Vault locked. Wait 30 seconds.", Toast.LENGTH_LONG).show()
+            currentInput = ""
+            // Auto-release after 30 seconds
+            binding.root.postDelayed({
+                securityPrefs.isLockedOut = false
+                securityPrefs.failedPinAttempts = 0
+                binding.tvHistory.text = "ENTER PIN"
+                binding.tvDisplay.text = "0"
+            }, 30_000)
+            return
+        }
+
         val master = securityPrefs.masterPin
         val decoy = securityPrefs.decoyPin
 
         when (currentInput) {
-            master -> launchVault(isDecoy = false)
-            decoy -> launchVault(isDecoy = true)
+            master -> {
+                // ✅ Correct: reset counters, record unlock time
+                securityPrefs.failedPinAttempts = 0
+                securityPrefs.lastUnlockTime = System.currentTimeMillis()
+                launchVault(isDecoy = false)
+            }
+            decoy -> {
+                securityPrefs.failedPinAttempts = 0
+                securityPrefs.lastUnlockTime = System.currentTimeMillis()
+                launchVault(isDecoy = true)
+            }
             else -> {
-                // Intruder logic: If they enter a 4-digit PIN that is WRONG, take a photo
+                // ❌ Wrong PIN
                 if (currentInput.length >= 4 && !currentInput.contains("[+×÷−]".toRegex())) {
+                    val attempts = securityPrefs.failedPinAttempts + 1
+                    securityPrefs.failedPinAttempts = attempts
+                    val maxAttempts = securityPrefs.maxFailedAttempts
+                    val remaining = maxAttempts - attempts
+                    
                     cameraHelper.takeIntruderPhoto(this)
+
+                    if (attempts >= maxAttempts) {
+                        securityPrefs.isLockedOut = true
+                        binding.tvHistory.text = "VAULT LOCKED"
+                        Toast.makeText(this, "Too many wrong attempts! Vault locked for 30s.", Toast.LENGTH_LONG).show()
+                    } else {
+                        binding.tvHistory.text = "WRONG ($remaining attempts left)"
+                        Toast.makeText(this, "Wrong PIN. $remaining attempts remaining.", Toast.LENGTH_SHORT).show()
+                    }
+                    binding.tvDisplay.text = "0"
+                } else {
+                    performMath()
                 }
-                performMath()
             }
         }
         currentInput = ""

@@ -12,7 +12,9 @@ import com.stealthvault.app.R
 import com.stealthvault.app.databinding.ActivityVaultBinding
 import com.stealthvault.app.ui.chat.ChatViewModel
 import com.stealthvault.app.utils.ShakeDetector
+import com.stealthvault.app.data.local.SecurityPreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class VaultActivity : AppCompatActivity() {
@@ -21,6 +23,10 @@ class VaultActivity : AppCompatActivity() {
     private val viewModel: VaultViewModel by viewModels()
     private lateinit var navController: NavController
     private var isDecoyMode = false
+    private var pausedAt: Long = 0L
+
+    @Inject
+    lateinit var securityPrefs: SecurityPreferenceManager
     
     private val shakeDetector = ShakeDetector {
         // Quick Hide!
@@ -48,6 +54,24 @@ class VaultActivity : AppCompatActivity() {
         setupNavigation()
         setupFab()
         shakeDetector.start(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausedAt = System.currentTimeMillis()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val timeout = securityPrefs.autoLockTimeoutMs
+        if (timeout != SecurityPreferenceManager.TIMEOUT_NEVER && pausedAt > 0) {
+            val elapsed = System.currentTimeMillis() - pausedAt
+            if (elapsed > timeout) {
+                // Lock the vault: go back to calculator
+                finish()
+                return
+            }
+        }
     }
 
     override fun onDestroy() {
