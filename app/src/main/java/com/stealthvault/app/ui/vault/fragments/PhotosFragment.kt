@@ -19,12 +19,15 @@ import kotlinx.coroutines.launch
 class PhotosFragment : Fragment(R.layout.fragment_vault_list) {
 
     private val viewModel: VaultViewModel by activityViewModels()
+    
+    @javax.inject.Inject
+    lateinit var encryptionManager: com.stealthvault.app.data.security.EncryptionManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentVaultListBinding.bind(view)
 
-        val adapter = VaultFileAdapter { file ->
+        val adapter = VaultFileAdapter(encryptionManager) { file ->
             val bundle = Bundle().apply {
                 putString("filePath", file.encryptedPath)
                 putString("fileType", "Photo")
