@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <device-admin>
     <uses-policies>
-        <!-- Minimal policies allowed for Profile Owner to prevent "Contact IT Admin" OS rejection -->
-        <force-lock />
-        <reset-password />
+        <!-- No policies requested: This bypasses corporate 'IT Admin' triggers on personal devices -->
     </uses-policies>
 </device-admin>

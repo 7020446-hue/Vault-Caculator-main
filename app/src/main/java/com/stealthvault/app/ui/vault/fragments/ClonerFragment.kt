@@ -24,6 +24,9 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
     private val viewModel: VaultViewModel by viewModels()
     private lateinit var adapter: ClonedAppAdapter
 
+    @javax.inject.Inject
+    lateinit var clonerManager: com.stealthvault.app.utils.ClonerManager
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentClonerBinding.bind(view)
@@ -31,35 +34,37 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
         setupRecyclerView()
         observeViewModel()
 
-        // Directly show app picker — no admin, no sandbox setup needed
         binding.fabClone.setOnClickListener {
-            showAppPicker()
+            if (!clonerManager.hasManagedProfile()) {
+                showManagedProfileSetupDialog()
+            } else {
+                showAppPicker()
+            }
         }
     }
 
     private fun setupRecyclerView() {
         adapter = ClonedAppAdapter(
             onLaunch = { app ->
+                // ALWAYS Check for In-App Web Version First (to keep user inside the vault)
                 val webUrl = com.stealthvault.app.ui.vault.AppWebActivity.WEB_APP_MAP[app.packageName]
 
                 if (webUrl != null) {
-                    // ✅ Has a web version — open inside vault
+                    // ✅ Open IMMEDIATELY inside vault (seamless experience)
                     val intent = android.content.Intent(requireContext(), com.stealthvault.app.ui.vault.AppWebActivity::class.java).apply {
                         putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_URL, webUrl)
                         putExtra(com.stealthvault.app.ui.vault.AppWebActivity.EXTRA_TITLE, app.appName)
                     }
                     startActivity(intent)
+                } else if (clonerManager.hasManagedProfile()) {
+                    // 🔄 Fallback to Sandbox Profile if it exists
+                    clonerManager.launchAppInWorkProfile(app.packageName)
                 } else {
-                    // 🔄 No web version — launch the real installed app
-                    val launchIntent = requireContext().packageManager
-                        .getLaunchIntentForPackage(app.packageName)?.apply {
-                            addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                            addFlags(android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                        }
+                    // 🔄 Last resort: Normal Native Launch
+                    val launchIntent = requireContext().packageManager.getLaunchIntentForPackage(app.packageName)
                     if (launchIntent != null) {
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         requireContext().startActivity(launchIntent)
-                    } else {
-                        Toast.makeText(context, "${app.appName} is not installed.", Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -80,9 +85,21 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
         }
     }
 
+    private fun showManagedProfileSetupDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Bypass Sandbox Setup")
+            .setMessage("To install apps *inside* the vault, we create a private 'Personal Sandbox'. This bypassed version won't show the usual IT Admin error.")
+            .setPositiveButton("Setup Sandbox") { _, _ ->
+                clonerManager.createManagedProfile()
+            }
+            .setNegativeButton("Add Shortcut Only") { _, _ ->
+                showAppPicker() 
+            }
+            .show()
+    }
+
     private fun showAppPicker() {
         val pm = requireContext().packageManager
-        // Only show user-installed apps that have a launcher icon
         val apps = pm.getInstalledApplications(0)
             .filter { app ->
                 app.flags and ApplicationInfo.FLAG_SYSTEM == 0 &&
@@ -99,14 +116,21 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
         val appNames = apps.map { it.loadLabel(pm).toString() }.toTypedArray()
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Add App Shortcut")
+            .setTitle("Select App")
             .setItems(appNames) { _, which ->
                 val selectedApp = apps[which]
                 val name = selectedApp.loadLabel(pm).toString()
                 viewModel.cloneApp(selectedApp.packageName, name)
-                Toast.makeText(context, "\"$name\" added to vault shortcuts.", Toast.LENGTH_SHORT).show()
+                
+                if (clonerManager.hasManagedProfile()) {
+                    clonerManager.enableAppInWorkProfile(selectedApp.packageName)
+                }
+                
+                Toast.makeText(context, "\"$name\" added to vault.", Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel", null)
+            .setNeutralButton("Open Market") { _, _ ->
+                clonerManager.openPlayStoreInWorkProfile()
+            }
             .show()
     }
 

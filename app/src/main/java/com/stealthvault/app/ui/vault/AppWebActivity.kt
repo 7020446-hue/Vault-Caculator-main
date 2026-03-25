@@ -46,15 +46,24 @@ class AppWebActivity : AppCompatActivity() {
             "com.discord"                   to "https://discord.com/app",
             "com.telegram.messenger"        to "https://web.telegram.org",
             "org.telegram.messenger"        to "https://web.telegram.org",
+            "com.skype.raider"              to "https://web.skype.com",
+            "com.microsoft.teams"           to "https://teams.microsoft.com",
+            "com.slack"                     to "https://app.slack.com",
             "com.viber.voip"                to "https://account.viber.com",
-            "com.paypal.android.p2pmobile"  to "https://www.paypal.com/myaccount",
+            "jp.naver.line.android"         to "https://line.me/en/login",
+            "com.tencent.mm"                to "https://web.wechat.com",
+            "com.paypal.android.p2pmobile"  to "https://www.paypal.com",
             "com.ubercab"                   to "https://m.uber.com",
             "com.airbnb.android"            to "https://www.airbnb.com",
             "com.tumblr"                    to "https://www.tumblr.com",
-            "com.microsoft.teams"           to "https://teams.microsoft.com",
-            "com.slack"                     to "https://app.slack.com",
             "com.dropbox.android"           to "https://www.dropbox.com",
-            "com.google.android.apps.drive" to "https://drive.google.com"
+            "com.google.android.apps.drive" to "https://drive.google.com",
+            "com.zoom.videomeetings"        to "https://zoom.us/join",
+            "com.hulu.plus"                 to "https://www.hulu.com",
+            "com.disney.disneyplus"         to "https://www.disneyplus.com",
+            "com.shazam.android"            to "https://www.shazam.com",
+            "com.quora.android"             to "https://www.quora.com",
+            "com.medium.reader"             to "https://medium.com"
         )
     }
 
