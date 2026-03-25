@@ -40,13 +40,18 @@ class ClonerFragment : Fragment(R.layout.fragment_cloner) {
     private fun setupRecyclerView() {
         adapter = ClonedAppAdapter(
             onLaunch = { app ->
-                // Launch the app normally via standard launcher Intent
+                // Launch the real installed app as a brand-new, separate task
                 val launchIntent = requireContext().packageManager
-                    .getLaunchIntentForPackage(app.packageName)
+                    .getLaunchIntentForPackage(app.packageName)?.apply {
+                        // These flags force Android to open it as a separate app,
+                        // completely independent from the vault
+                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        addFlags(android.content.Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                    }
                 if (launchIntent != null) {
-                    startActivity(launchIntent)
+                    requireContext().startActivity(launchIntent)
                 } else {
-                    Toast.makeText(context, "${app.appName} is not installed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "${app.appName} is not installed on this device.", Toast.LENGTH_SHORT).show()
                 }
             },
             onDelete = { app ->
