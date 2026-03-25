@@ -41,8 +41,16 @@ class MediaFragment : Fragment(R.layout.fragment_media) {
             }
             findNavController().navigate(R.id.mediaDetailFragment, bundle)
         }
-        binding.rvMedia.layoutManager = GridLayoutManager(requireContext(), 3)
-        binding.rvMedia.adapter = adapter
+        
+        // Calculate dynamic span count
+        val displayMetrics = resources.displayMetrics
+        val dpWidth = displayMetrics.widthPixels / displayMetrics.density
+        val spanCount = (dpWidth / 180).toInt().coerceAtLeast(2) // 180dp per item
+
+        binding.rvMedia.apply {
+            layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), spanCount)
+            adapter = this@MediaFragment.adapter
+        }
     }
 
     private fun setupTabs() {

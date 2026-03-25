@@ -71,6 +71,8 @@ class ClonerManager @Inject constructor(
         } catch (e: Exception) {
             // Might fail if not profile owner yet or app not found
         }
+    }
+
     /**
      * Open the Play Store inside the work profile to allow installing new apps there.
      */
