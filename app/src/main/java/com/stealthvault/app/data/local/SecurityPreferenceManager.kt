@@ -65,4 +65,8 @@ class SecurityPreferenceManager @Inject constructor(
     var isSetupComplete: Boolean
         get() = prefs.getBoolean(KEY_IS_SETUP_COMPLETE, false)
         set(value) = prefs.edit().putBoolean(KEY_IS_SETUP_COMPLETE, value).apply()
+
+    var trustedSsid: String?
+        get() = prefs.getString("trusted_ssid", null)
+        set(value) = prefs.edit().putString("trusted_ssid", value).apply()
 }

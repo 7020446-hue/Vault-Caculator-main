@@ -27,13 +27,12 @@ class AppLockAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            // Already skip our own app
             val pkgName = event.packageName?.toString() ?: return
             if (pkgName == packageName) return
 
-            // Smart Lock logic: Temporarily disabled to ensure absolute security validation.
-            // if (smartLockManager.isAtHome()) return
-            
+            // Smart Lock: Skip locking apps when user is on trusted home Wi-Fi
+            if (smartLockManager.isAtHome()) return
+
             checkAppLock(pkgName)
         }
     }
