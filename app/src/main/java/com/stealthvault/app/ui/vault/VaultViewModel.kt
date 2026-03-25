@@ -77,10 +77,16 @@ class VaultViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun importFile(context: Context, uri: Uri) = viewModelScope.launch {
-        val type = context.contentResolver.getType(uri) ?: "Document"
+        val type = context.contentResolver.getType(uri)?.lowercase() ?: ""
+        val fileName = queryFileName(context, uri) ?: ""
+        val ext = fileName.substringAfterLast('.', "").lowercase()
+
+        val isImage = type.startsWith("image/") || ext in listOf("jpg", "jpeg", "png", "gif", "heic", "webp", "bmp")
+        val isVideo = type.startsWith("video/") || ext in listOf("mp4", "mkv", "avi", "mov", "webm")
+
         val category = when {
-            type.startsWith("image/") -> "Photo"
-            type.startsWith("video/") -> "Video"
+            isImage -> "Photo"
+            isVideo -> "Video"
             else -> "Document"
         }
         

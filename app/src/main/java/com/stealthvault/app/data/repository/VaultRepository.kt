@@ -41,7 +41,7 @@ class VaultRepository @Inject constructor(
                 encryptionManager.encryptFile(tempThumb, thumbFile)
                 tempThumb.delete()
             }
-        } catch (e: Exception) { e.printStackTrace() } // Fail gracefully so import proceeds
+        } catch (e: Throwable) { e.printStackTrace() } // Catch all (including OOM) to fail gracefully
         // ------------------------------------------------
 
         val finalOriginalPath = originalPath ?: originalFile.absolutePath
