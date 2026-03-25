@@ -84,6 +84,41 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.stealthvault.app.ui.chat.ChatListFragment"
+        android:label="Secure Chat"
+        tools:layout="@layout/fragment_chat_list">
+        <action
+            android:id="@+id/action_chatList_to_chatScreen"
+            app:destination="@id/chatScreenFragment" />
+        <action
+            android:id="@+id/action_chatList_to_contacts"
+            app:destination="@id/contactsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatScreenFragment"
+        android:name="com.stealthvault.app.ui.chat.ChatScreenFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat_screen">
+        <argument
+            android:name="partnerId"
+            app:argType="string" />
+        <argument
+            android:name="partnerName"
+            app:argType="string" />
+        <argument
+            android:name="partnerPubKey"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.stealthvault.app.ui.chat.ContactsFragment"
+        android:label="Add Secure Contact"
+        tools:layout="@layout/fragment_contacts" />
+
 </navigation>
 
 

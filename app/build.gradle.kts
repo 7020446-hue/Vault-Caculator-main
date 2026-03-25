@@ -91,6 +91,15 @@ dependencies {
     implementation("com.google.zxing:core:3.5.1")
     implementation("com.google.guava:guava:31.1-android")
     
+    // Firebase for Secure Messaging Relay
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    
+    // Crypto
+    implementation("org.bouncycastle:bcprov-jdk15to18:1.70")
+    
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

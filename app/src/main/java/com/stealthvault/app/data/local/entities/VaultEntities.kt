@@ -46,6 +46,26 @@ data class VaultNote(
     val timestamp: Long = System.currentTimeMillis()
 )
 
+@Entity(tableName = "secure_messages")
+data class SecureMessage(
+    @PrimaryKey val messageId: String,
+    val chatPartnerId: String,
+    val content: String,
+    val timestamp: Long = System.currentTimeMillis(),
+    val isFromMe: Boolean,
+    val isSelfDestruct: Boolean = false,
+    val expiryTime: Long = 0
+)
+
+@Entity(tableName = "chat_contacts")
+data class ChatContact(
+    @PrimaryKey val userId: String,
+    val username: String,
+    val publicKey: String,
+    val lastMessage: String = "",
+    val lastTimestamp: Long = 0
+)
+
 @Dao
 interface VaultDao {
     // Files
@@ -97,9 +117,25 @@ interface VaultDao {
     
     @Delete
     suspend fun deleteNote(note: VaultNote)
+
+    // Secure Messaging
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMessage(message: SecureMessage)
+
+    @Query("SELECT * FROM secure_messages WHERE chatPartnerId = :partnerId ORDER BY timestamp ASC")
+    fun getMessagesForPartner(partnerId: String): kotlinx.coroutines.flow.Flow<List<SecureMessage>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertContact(contact: ChatContact)
+
+    @Query("SELECT * FROM chat_contacts ORDER BY lastTimestamp DESC")
+    fun getAllContacts(): kotlinx.coroutines.flow.Flow<List<ChatContact>>
+
+    @Query("DELETE FROM secure_messages WHERE isSelfDestruct = 1 AND expiryTime < :currentTime")
+    suspend fun cleanExpiredMessages(currentTime: Long)
 }
 
-@Database(entities = [VaultFile::class, LockedApp::class, IntruderLog::class, VaultNote::class, ClonedApp::class], version = 3)
+@Database(entities = [VaultFile::class, LockedApp::class, IntruderLog::class, VaultNote::class, ClonedApp::class, SecureMessage::class, ChatContact::class], version = 4)
 abstract class VaultDatabase : RoomDatabase() {
     abstract fun vaultDao(): VaultDao
 }
