@@ -23,6 +23,17 @@ class BrowserFragment : Fragment(R.layout.fragment_browser) {
         setupWebView()
         setupHome()
 
+        // Restore browsing session if user switched tabs
+        if (savedInstanceState != null) {
+            binding.webView.restoreState(savedInstanceState)
+            val hasHistory = binding.webView.copyBackForwardList().size > 0
+            if (hasHistory) {
+                binding.homeContainer.visibility = View.GONE
+                binding.webView.visibility = View.VISIBLE
+                binding.etUrl.setText(binding.webView.url ?: "")
+            }
+        }
+
         binding.etUrl.setOnEditorActionListener { _, actionId, _ ->
             val url = binding.etUrl.text.toString()
             if (url.isNotEmpty()) {
@@ -33,6 +44,28 @@ class BrowserFragment : Fragment(R.layout.fragment_browser) {
             imm?.hideSoftInputFromWindow(binding.etUrl.windowToken, 0)
             true
         }
+
+        // Smart Back Navigation
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.webView.visibility == View.VISIBLE) {
+                    if (binding.webView.canGoBack()) {
+                        binding.webView.goBack() // Navigate web history
+                    } else {
+                        // Return to Incognito Homepage
+                        binding.webView.visibility = View.GONE
+                        binding.webView.clearHistory()
+                        binding.homeContainer.visibility = View.VISIBLE
+                        binding.etUrl.setText("")
+                    }
+                } else {
+                    // Not browsing, pass back to system
+                    isEnabled = false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
     }
 
     private fun setupHome() {
@@ -98,5 +131,10 @@ class BrowserFragment : Fragment(R.layout.fragment_browser) {
             clearFormData()
         }
         _binding = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        _binding?.webView?.saveState(outState)
     }
 }
