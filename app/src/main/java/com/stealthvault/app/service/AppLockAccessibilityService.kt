@@ -31,12 +31,9 @@ class AppLockAccessibilityService : AccessibilityService() {
             val pkgName = event.packageName?.toString() ?: return
             if (pkgName == packageName) return
 
-            // New logic: Skip if at home (Smart Lock)
-            if (smartLockManager.isAtHome()) {
-                Log.d("AppLock", "Smart Lock: Trusted WiFi, skipping protection.")
-                return
-            }
-
+            // Smart Lock logic: Temporarily disabled to ensure absolute security validation.
+            // if (smartLockManager.isAtHome()) return
+            
             checkAppLock(pkgName)
         }
     }
