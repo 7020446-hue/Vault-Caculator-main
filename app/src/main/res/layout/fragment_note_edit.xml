@@ -92,16 +92,8 @@
             android:layout_height="match_parent"
             android:background="@null"
             android:gravity="top"
+            android:hint="Start typing..."
             android:textColor="@color/on_surface" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btnSaveNote"
-        style="@style/Widget.Material3.Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Save Note"
-        app:layout_constraintBottom_toBottomOf="parent" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
